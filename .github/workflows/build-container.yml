@@ -37,6 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [versionize, build-container-app]
     steps:
+      - uses: actions/checkout@v3
       - name: Azure Login
         uses: azure/login@v1
         with:
