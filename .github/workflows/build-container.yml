@@ -1,0 +1,47 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  versionize:
+    runs-on: ubuntu-latest
+    outputs:
+      semver: ${{ steps.gitversion.outputs.MajorMinorPatch }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.14
+        with:
+          versionSpec: "5.x"
+      - name: Determine Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.14
+        with:
+          useConfigFile: true
+
+  publish-bicep:
+    runs-on: ubuntu-latest
+    needs: versionize
+    steps:
+      - uses: actions/checkout@v3
+      - name: Compile infrastructure
+        uses: Azure/cli@v1
+        with:
+          inlineScript: az bicep build --file ./templates/azure-container-app.bicep
+
+      - name: Login to ACR
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Publish
+        uses: Azure/cli@v1
+        with:
+          inlineScript: az bicep publish --file ./templates/azure-container-app.bicep --target "br:${{ secrets.ACR_LOGIN_SERVER }}/templates/containerapp:${{needs.versionize.outputs.semver}}"
