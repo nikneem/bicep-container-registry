@@ -26,7 +26,6 @@ jobs:
 
   build-container-app:
     runs-on: ubuntu-latest
-    needs: versionize
     steps:
       - uses: actions/checkout@v3
       - name: Compile infrastructure
@@ -36,7 +35,7 @@ jobs:
 
   publish-bicep:
     runs-on: ubuntu-latest
-    needs: build-container-app
+    needs: [versionize, build-container-app]
     steps:
       - name: Azure Login
         uses: azure/login@v1
