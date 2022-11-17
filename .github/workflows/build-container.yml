@@ -24,7 +24,7 @@ jobs:
         with:
           useConfigFile: true
 
-  publish-bicep:
+  build-container:
     runs-on: ubuntu-latest
     needs: versionize
     steps:
@@ -34,13 +34,14 @@ jobs:
         with:
           inlineScript: az bicep build --file ./templates/azure-container-app.bicep
 
-      - name: Login to ACR
-        uses: azure/docker-login@v1
+  publish-bicep:
+    runs-on: ubuntu-latest
+    needs: build-container
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
         with:
-          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
-
+          creds: ${{ secrets.AZURE_PROD }}
       - name: Publish
         uses: Azure/cli@v1
         with:
