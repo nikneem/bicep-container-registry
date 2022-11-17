@@ -15,7 +15,7 @@ param environmentVariables array
 
 param enableDapr bool
 param daprAppName string = containerName
-param daprPort int
+param daprPort int = ingressTargetPort
 
 param containerAppEnvironmentResourceName string
 param containerAppEnvironmentResourceGroupName string
