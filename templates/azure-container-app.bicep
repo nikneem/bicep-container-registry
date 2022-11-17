@@ -3,6 +3,7 @@ param location string = resourceGroup().location
 
 param enableIngress bool
 param ingressTargetPort int = 80
+param userAssignedIdentityId string
 
 param containerRegistryName string
 param containerName string
@@ -64,7 +65,10 @@ resource apiContainerApp 'Microsoft.App/containerApps@2022-03-01' = {
   name: containerAppName
   location: location
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${userAssignedIdentityId}': {}
+    }
   }
   properties: {
     managedEnvironmentId: containerAppEnvironments.id
