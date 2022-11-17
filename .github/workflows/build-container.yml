@@ -45,4 +45,4 @@ jobs:
       - name: Publish
         uses: Azure/cli@v1
         with:
-          inlineScript: az bicep publish --file ./templates/azure-container-app.bicep --target "br:${{ secrets.ACR_LOGIN_SERVER }}/templates/containerapp:${{needs.versionize.outputs.semver}}"
+          inlineScript: az bicep publish --file ./templates/azure-container-app.bicep --target "br:${{ secrets.ACR_LOGIN_SERVER }}/bicep/modules/core/containerapp:${{needs.versionize.outputs.semver}}"
