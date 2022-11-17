@@ -24,7 +24,7 @@ jobs:
         with:
           useConfigFile: true
 
-  build-container:
+  build-container-app:
     runs-on: ubuntu-latest
     needs: versionize
     steps:
@@ -36,7 +36,7 @@ jobs:
 
   publish-bicep:
     runs-on: ubuntu-latest
-    needs: build-container
+    needs: build-container-app
     steps:
       - name: Azure Login
         uses: azure/login@v1
