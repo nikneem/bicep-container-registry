@@ -77,6 +77,12 @@ resource apiContainerApp 'Microsoft.App/containerApps@2022-03-01' = {
       activeRevisionsMode: 'Single'
       ingress: ingress
       dapr: dapr
+      registries: [
+        {
+          server: containerRegistryName
+          identity: userAssignedIdentityId
+        }
+      ]
     }
     template: {
       containers: [
