@@ -31,7 +31,9 @@ jobs:
       - name: Compile infrastructure
         uses: Azure/cli@v1
         with:
-          inlineScript: az bicep build --file ./templates/azure-container-app.bicep
+          inlineScript: |
+            az bicep build --file ./templates/azure-container-app.bicep
+            az bicep build --file ./templates/Authorization/roleAssignments.bicep
 
   publish-bicep:
     runs-on: ubuntu-latest
@@ -45,4 +47,6 @@ jobs:
       - name: Publish
         uses: Azure/cli@v1
         with:
-          inlineScript: az bicep publish --file ./templates/azure-container-app.bicep --target "br:${{ secrets.ACR_LOGIN_SERVER }}/bicep/modules/core/containerapp:${{needs.versionize.outputs.semver}}"
+          inlineScript: |
+            az bicep publish --file ./templates/Authorization/roleAssignments.bicep --target "br:${{ secrets.ACR_LOGIN_SERVER }}/bicep/modules/basic/authorization/roleassignments:${{needs.versionize.outputs.semver}}"
+            az bicep publish --file ./templates/azure-container-app.bicep --target "br:${{ secrets.ACR_LOGIN_SERVER }}/bicep/modules/core/containerapp:${{needs.versionize.outputs.semver}}"
